@@ -1,22 +1,26 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/internet_cafe_db
-    username: internet_cafe_user
-    password: internet_cafe_pass
-    driver-class-name: org.postgresql.Driver
+  config:
+    activate:
+      on-profile: test
 
-  data:
-    redis:
-      host: localhost
-      port: 6379
-
-  kafka:
-    bootstrap-servers: localhost:9092
+  main:
+    lazy-initialization: true
 
   flyway:
-    enabled: true
+    enabled: false
 
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    show-sql: true
+  kafka:
+    listener:
+      auto-startup: false
+
+  task:
+    scheduling:
+      enabled: false
+
+app:
+  mail:
+    enabled: false
+  outbox:
+    relay-enabled: false
+  storage:
+    enabled: false
