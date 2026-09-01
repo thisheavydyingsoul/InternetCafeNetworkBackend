@@ -6,9 +6,6 @@ on:
       - "feature/**"
       - "fix/**"
       - "hotfix/**"
-      - dev
-      - main
-    
   pull_request:
     branches:
       - dev
@@ -37,12 +34,14 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: "21"
           cache: maven
 
       - name: Run unit tests
         run: ./mvnw --batch-mode test
 
+      - name: Run integration tests
+        run: ./mvnw --batch-mode verify -Pintegration
 
   backend-build:
     name: backend-build
@@ -61,33 +60,11 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: "21"
           cache: maven
 
       - name: Build JAR
         run: ./mvnw --batch-mode package -DskipTests
-
-  backend-integration:
-    name: backend-integration
-    runs-on: ubuntu-latest
-    needs: backend-build
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "17"
-          cache: maven
-
-      - name: Make Maven Wrapper executable
-        run: chmod +x mvnw
-
-      - name: Run PostgreSQL integration tests
-        run: ./mvnw --batch-mode verify -Pintegration
 
   backend-docker-build:
     name: backend-docker-build
