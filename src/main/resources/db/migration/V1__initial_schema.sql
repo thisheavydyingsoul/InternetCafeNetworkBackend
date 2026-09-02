@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS games (
     name VARCHAR(100) NOT NULL,
     description TEXT,
     image_url VARCHAR(255),
+    version BIGINT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
