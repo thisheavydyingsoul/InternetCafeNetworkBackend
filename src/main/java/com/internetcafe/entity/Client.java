@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 public class Client extends User {
 
-    private double balance = 0.0;
+    private BigDecimal balance = 0.0;
 
     @OneToMany(mappedBy = "client")
     private List<Rent> rents = new ArrayList<>();
