@@ -152,16 +152,14 @@ CREATE TABLE IF NOT EXISTS outbox_events (
 
 
 
--- Для проверки пересечения периодов аренды
 CREATE INDEX idx_rent_device_status_period ON rents(device_id, status, start_date_time, end_date_time);
 
--- Для быстрого поиска по email (основной идентификатор)
 CREATE INDEX idx_client_email ON clients(email);
 CREATE INDEX idx_admin_email ON administrators(email);
 
--- Для outbox polling
+
 CREATE INDEX idx_outbox_status_created ON outbox_events(status, created_at);
 
--- Для фильтрации по статусу платежа
+
 CREATE INDEX idx_payment_status ON payments(status);
 CREATE INDEX idx_payment_rent ON payments(rent_id);
