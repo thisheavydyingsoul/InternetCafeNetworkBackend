@@ -1,0 +1,36 @@
+spring:
+  config:
+    activate:
+      on-profile: production
+
+  jpa:
+    show-sql: false
+
+  kafka:
+    listener:
+      auto-startup: true
+
+  task:
+    scheduling:
+      enabled: true
+
+logging:
+  level:
+    root: WARN
+    com.internetcafe: INFO
+    org.springframework.web: WARN
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+
+management:
+  endpoint:
+    health:
+      show-details: never
+
+app:
+  mail:
+    enabled: true
+  outbox:
+    relay-enabled: true
+  storage:
+    enabled: true
