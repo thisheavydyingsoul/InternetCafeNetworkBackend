@@ -2,7 +2,8 @@ CREATE TABLE IF NOT EXISTS offices (
                                        id VARCHAR(36) PRIMARY KEY,
     address TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    version BIGINT DEFAULT 0
     );
 
 
@@ -99,6 +100,7 @@ CREATE TABLE IF NOT EXISTS reviews (
     rent_id VARCHAR(36) PRIMARY KEY,
     contents TEXT NOT NULL,
     rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    version BIGINT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_review_rent FOREIGN KEY (rent_id) REFERENCES rents(id)
@@ -112,6 +114,7 @@ CREATE TABLE IF NOT EXISTS promos (
     coefficient DECIMAL(3, 2) NOT NULL DEFAULT 1.00,
     description TEXT,
     image_url VARCHAR(255),
+    version BIGINT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
@@ -121,7 +124,9 @@ CREATE TABLE IF NOT EXISTS logs (
     id VARCHAR(36) PRIMARY KEY,
     administrator_id VARCHAR(36) NOT NULL,
     contents TEXT NOT NULL,
+    version BIGINT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_log_administrator FOREIGN KEY (administrator_id) REFERENCES administrators(id)
     );
 
@@ -134,6 +139,7 @@ CREATE TABLE IF NOT EXISTS payments (
     provider VARCHAR(20) NOT NULL DEFAULT 'MOCK',
     external_transaction_id VARCHAR(100),
     paid_at TIMESTAMP,
+    version BIGINT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_payment_rent FOREIGN KEY (rent_id) REFERENCES rents(id)
@@ -147,6 +153,7 @@ CREATE TABLE IF NOT EXISTS outbox_events (
     event_type VARCHAR(100) NOT NULL,
     payload JSONB NOT NULL,
     status VARCHAR(10) NOT NULL CHECK (status IN ('NEW', 'SENT')) DEFAULT 'NEW',
+    version BIGINT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
