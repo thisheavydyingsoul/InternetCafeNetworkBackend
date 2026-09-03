@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS clients (
 
 CREATE TABLE IF NOT EXISTS devices (
     id VARCHAR(36) PRIMARY KEY,
+    office_id VARCHAR(36) NOT NULL,
     type VARCHAR(50) NOT NULL,
     name VARCHAR(100) NOT NULL,
     condition VARCHAR(20) NOT NULL CHECK (condition IN ('WORKING', 'DAMAGED', 'IN_REPAIR', 'WRITTEN_OFF')),
@@ -69,7 +70,7 @@ CREATE TABLE IF NOT EXISTS games (
 
 
 CREATE TABLE IF NOT EXISTS device_games (
-    id VARCHAR(36) NOT NULL,
+    device_id VARCHAR(36) NOT NULL,
     game_id VARCHAR(36) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (device_id, game_id),
@@ -97,6 +98,7 @@ CREATE TABLE IF NOT EXISTS rents (
 
 CREATE TABLE IF NOT EXISTS reviews (
     id VARCHAR(36) PRIMARY KEY,
+    rent_id VARCHAR(36) NOT NULL,
     contents TEXT NOT NULL,
     rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
     version BIGINT DEFAULT 0,
