@@ -1,0 +1,16 @@
+spring:
+  kafka:
+    listener:
+      auto-startup: false
+
+  task:
+    scheduling:
+      enabled: false
+
+app:
+  mail:
+    enabled: false
+  outbox:
+    relay-enabled: false
+  storage:
+    enabled: false

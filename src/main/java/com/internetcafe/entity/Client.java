@@ -6,6 +6,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
 @Setter
 public class Client extends User {
 
-    private double balance = 0.0;
+    private BigDecimal balance = BigDecimal.ZERO;
 
     @OneToMany(mappedBy = "client")
     private List<Rent> rents = new ArrayList<>();
