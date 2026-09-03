@@ -21,7 +21,7 @@ logging:
     org.springframework.web: INFO
     org.springframework.security: WARN
     org.springframework.mail: INFO
-    org.hibernate.sql: WARN
+    org.hibernate.SQL: WARN
 
 management:
   endpoint:
