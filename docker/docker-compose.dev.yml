@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-internet_cafe_db}
       POSTGRES_USER: ${POSTGRES_USER:-internet_cafe_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-internet_cafe_pass}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
     ports:
       - "5432:5432"
     volumes:
@@ -57,7 +57,7 @@ services:
     ports:
       - "2181:2181"
     volumes:
-        - zookeeper_data_dev:/var/lib/zookeeper/data
+      - zookeeper_data_dev:/var/lib/zookeeper/data
     healthcheck:
       test:
         [
@@ -104,6 +104,9 @@ services:
       - internet-cafe-network-dev
 
   backend:
+    build:
+      context: ..
+      dockerfile: Dockerfile
     image: ${DOCKER_USERNAME:-internetcafe}/internetcafe-backend:dev-latest
     container_name: internet-cafe-backend-dev
     restart: unless-stopped
@@ -122,6 +125,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
       KAFKA_HOST: kafka
       KAFKA_PORT: 9092
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
@@ -130,14 +134,22 @@ services:
       MAIL_USERNAME: ${MAIL_USERNAME:?MAIL_USERNAME is required}
       MAIL_PASSWORD: ${MAIL_PASSWORD:?MAIL_PASSWORD is required}
       MAIL_FROM: ${MAIL_FROM:-noreply@example.com}
-      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:4200}
-      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:4200}
+      FRONTEND_URL: ${FRONTEND_URL:?FRONTEND_URL is required}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:?CORS_ALLOWED_ORIGINS is required}
       SERVER_PORT: 8080
-
+      SPRING_SECURITY_USER_NAME: actuator
+      SPRING_SECURITY_USER_PASSWORD: ${ACTUATOR_PASSWORD:?ACTUATOR_PASSWORD is required}
     ports:
       - "8080:8080"
     networks:
       - internet-cafe-network-dev
+
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl -f http://localhost:8080/api/actuator/health || exit 1"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 5
+    #   start_period: 60s
 
   pgadmin:
     image: dpage/pgadmin4:latest
