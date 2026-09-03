@@ -2,7 +2,8 @@ CREATE TABLE IF NOT EXISTS offices (
                                        id VARCHAR(36) PRIMARY KEY,
     address TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    version BIGINT DEFAULT 0
     );
 
 
@@ -62,6 +63,7 @@ CREATE TABLE IF NOT EXISTS games (
     name VARCHAR(100) NOT NULL,
     description TEXT,
     image_url VARCHAR(255),
+    version BIGINT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
@@ -95,9 +97,11 @@ CREATE TABLE IF NOT EXISTS rents (
 
 
 CREATE TABLE IF NOT EXISTS reviews (
-    rent_id VARCHAR(36) PRIMARY KEY,
+    id VARCHAR(36) PRIMARY KEY,
+    rent_id VARCHAR(36) NOT NULL,
     contents TEXT NOT NULL,
     rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    version BIGINT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_review_rent FOREIGN KEY (rent_id) REFERENCES rents(id)
@@ -111,6 +115,7 @@ CREATE TABLE IF NOT EXISTS promos (
     coefficient DECIMAL(3, 2) NOT NULL DEFAULT 1.00,
     description TEXT,
     image_url VARCHAR(255),
+    version BIGINT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
@@ -120,7 +125,9 @@ CREATE TABLE IF NOT EXISTS logs (
     id VARCHAR(36) PRIMARY KEY,
     administrator_id VARCHAR(36) NOT NULL,
     contents TEXT NOT NULL,
+    version BIGINT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_log_administrator FOREIGN KEY (administrator_id) REFERENCES administrators(id)
     );
 
@@ -133,6 +140,7 @@ CREATE TABLE IF NOT EXISTS payments (
     provider VARCHAR(20) NOT NULL DEFAULT 'MOCK',
     external_transaction_id VARCHAR(100),
     paid_at TIMESTAMP,
+    version BIGINT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_payment_rent FOREIGN KEY (rent_id) REFERENCES rents(id)
@@ -146,22 +154,21 @@ CREATE TABLE IF NOT EXISTS outbox_events (
     event_type VARCHAR(100) NOT NULL,
     payload JSONB NOT NULL,
     status VARCHAR(10) NOT NULL CHECK (status IN ('NEW', 'SENT')) DEFAULT 'NEW',
+    version BIGINT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
 
 
--- Для проверки пересечения периодов аренды
 CREATE INDEX idx_rent_device_status_period ON rents(device_id, status, start_date_time, end_date_time);
 
--- Для быстрого поиска по email (основной идентификатор)
 CREATE INDEX idx_client_email ON clients(email);
 CREATE INDEX idx_admin_email ON administrators(email);
 
--- Для outbox polling
+
 CREATE INDEX idx_outbox_status_created ON outbox_events(status, created_at);
 
--- Для фильтрации по статусу платежа
+
 CREATE INDEX idx_payment_status ON payments(status);
 CREATE INDEX idx_payment_rent ON payments(rent_id);

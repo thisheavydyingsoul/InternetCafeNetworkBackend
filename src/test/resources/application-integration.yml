@@ -1,14 +1,4 @@
 spring:
-  config:
-    activate:
-      on-profile: test
-
-  main:
-    lazy-initialization: true
-
-  flyway:
-    enabled: false
-
   kafka:
     listener:
       auto-startup: false
