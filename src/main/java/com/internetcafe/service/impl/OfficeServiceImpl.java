@@ -1,5 +1,7 @@
 package com.internetcafe.service.impl;
 
+import com.internetcafe.dto.request.office.OfficeCreateRequest;
+import com.internetcafe.dto.request.office.OfficeUpdateRequest;
 import com.internetcafe.dto.response.OfficeResponse;
 import com.internetcafe.entity.Office;
 import com.internetcafe.mapper.OfficeMapper;
@@ -33,5 +35,25 @@ public class OfficeServiceImpl implements OfficeService {
         Office office = officeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Office not found with id: " + id));
         return officeMapper.toResponse(office);
+    }
+
+    @Override
+    @Transactional
+    public OfficeResponse create(OfficeCreateRequest request) {
+        Office office = officeMapper.toEntity(request);
+        return officeMapper.toResponse(officeRepository.save(office));
+    }
+
+    @Override
+    @Transactional
+    public OfficeResponse update(String id, OfficeUpdateRequest request) {
+        Office office = getOfficeEntity(id);
+        officeMapper.updateEntity(request, office);
+        return officeMapper.toResponse(officeRepository.save(office));
+    }
+
+    private Office getOfficeEntity(String id) {
+        return officeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Office", id));
     }
 }
