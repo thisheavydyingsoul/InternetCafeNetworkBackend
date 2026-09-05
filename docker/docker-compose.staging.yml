@@ -1,0 +1,186 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: internet-cafe-postgres-staging
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-internet_cafe_db}
+      POSTGRES_USER: ${POSTGRES_USER:-internet_cafe_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    volumes:
+      - postgres_data_staging:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-internet_cafe_user} -d ${POSTGRES_DB:-internet_cafe_db}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    command:
+      - postgres
+      - -c
+      - wal_level=logical
+    networks:
+      - internet-cafe-network-staging
+
+  redis:
+    image: redis:7-alpine
+    container_name: internet-cafe-redis-staging
+    restart: unless-stopped
+    volumes:
+      - redis_data_staging:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep -q PONG"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+    networks:
+      - internet-cafe-network-staging
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.7.1
+    container_name: internet-cafe-zookeeper-staging
+    restart: unless-stopped
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=ruok"
+    volumes:
+      - zookeeper_data_staging:/var/lib/zookeeper/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "echo ruok | nc -w 2 localhost 2181 | grep -q '^imok$'",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    networks:
+      - internet-cafe-network-staging
+
+  kafka:
+    image: confluentinc/cp-kafka:7.7.1
+    container_name: internet-cafe-kafka-staging
+    restart: unless-stopped
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    volumes:
+      - kafka_data_staging:/var/lib/kafka/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "kafka-topics --bootstrap-server kafka:9092 --list >/dev/null 2>&1",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 90s
+    networks:
+      - internet-cafe-network-staging
+
+  backend:
+    image: ${BACKEND_IMAGE:?BACKEND_IMAGE is required}
+    pull_policy: always
+    container_name: internet-cafe-backend-staging
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: staging
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-internet_cafe_db}
+      POSTGRES_USER: ${POSTGRES_USER:-internet_cafe_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      KAFKA_HOST: kafka
+      KAFKA_PORT: 9092
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      MAIL_HOST: ${MAIL_HOST:-sandbox.smtp.mailtrap.io}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME:?MAIL_USERNAME is required}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:?MAIL_PASSWORD is required}
+      MAIL_FROM: ${MAIL_FROM:-noreply@example.com}
+      FRONTEND_URL: ${FRONTEND_URL:?FRONTEND_URL is required}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:?CORS_ALLOWED_ORIGINS is required}
+      SERVER_PORT: 8080
+      SPRING_SECURITY_USER_NAME: actuator
+      SPRING_SECURITY_USER_PASSWORD: ${ACTUATOR_PASSWORD:?ACTUATOR_PASSWORD is required}
+    ports:
+      - "8080:8080"
+    networks:
+      - internet-cafe-network-staging
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -qO- http://localhost:8080/api/actuator/health | grep -q '\"status\":\"UP\"' || exit 1",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 90s
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: internet-cafe-pgadmin-staging
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:?PGADMIN_EMAIL is required}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:?PGADMIN_PASSWORD is required}
+    ports:
+      - "5050:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - internet-cafe-network-staging
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: internet-cafe-kafka-ui-staging
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: staging
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - internet-cafe-network-staging
+
+volumes:
+  postgres_data_staging:
+  redis_data_staging:
+  kafka_data_staging:
+  zookeeper_data_staging:
+
+networks:
+  internet-cafe-network-staging:
+    driver: bridge
