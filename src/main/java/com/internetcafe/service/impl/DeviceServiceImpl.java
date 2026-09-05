@@ -1,7 +1,10 @@
 package com.internetcafe.service.impl;
 
+import com.internetcafe.dto.request.device.DeviceCreateRequest;
+import com.internetcafe.dto.request.device.DeviceUpdateRequest;
 import com.internetcafe.dto.response.DeviceResponse;
 import com.internetcafe.entity.Device;
+import com.internetcafe.entity.Office;
 import com.internetcafe.exception.ResourceNotFoundException;
 import com.internetcafe.mapper.DeviceMapper;
 import com.internetcafe.repository.DeviceRepository;
@@ -48,4 +51,10 @@ public class DeviceServiceImpl implements DeviceService {
                 .map(deviceMapper::toResponse)
                 .collect(Collectors.toList());
     }
+
+    private Device getDeviceWithDetails(String id) {
+        return deviceRepository.findWithDetailsById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Device", id));
+    }
+
 }
