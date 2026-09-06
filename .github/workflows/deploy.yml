@@ -3,7 +3,6 @@ name: Backend deploy
 on:
   workflow_call:
     inputs:
-<<<<<<< Updated upstream:.github/workflows/deploy-staging.yml
       image_tag:
         description: Immutable backend image tag
         required: true
@@ -13,27 +12,12 @@ on:
         required: true
         type: string
 
-    secrets:
-      staging_ssh_user:
-        description: SSH username for staging VM
-        required: true
-      staging_ssh_private_key:
-        description: SSH private key for staging VM
-        required: true
-      staging_ghcr_token:
-        description: GHCR pull token for staging VM
-        required: true
-      staging_ghcr_user:
-        description: GHCR username for staging VM
-        required: true
-=======
       environment:
         required: true
         type: string
       ref:
         required: true
         type: string
->>>>>>> Stashed changes:.github/workflows/deploy.yml
 
 permissions:
   contents: read
@@ -45,11 +29,7 @@ concurrency:
 
 jobs:
   build-and-push:
-<<<<<<< Updated upstream:.github/workflows/deploy-staging.yml
-    name: backend-build-and-push-staging
-=======
     name: backend-build-and-push-${{ inputs.environment }}
->>>>>>> Stashed changes:.github/workflows/deploy.yml
     runs-on: ubuntu-latest
     outputs:
       image_tag: ${{ steps.meta.outputs.image_tag }}
@@ -101,34 +81,6 @@ jobs:
       url: http://${{ vars.HOST }}:8080/api/actuator/health
 
     steps:
-<<<<<<< Updated upstream:.github/workflows/deploy-staging.yml
-      - name: Deploy to staging VM
-        uses: appleboy/ssh-action@v1.2.0
-        env:
-          BACKEND_IMAGE: >-
-            ghcr.io/${{ github.repository_owner }}/internet-cafe-api:${{ needs.build-and-push.outputs.image_tag }}
-          GHCR_TOKEN: ${{ secrets.STAGING_GHCR_TOKEN }}
-          GHCR_USER: ${{ secrets.STAGING_GHCR_USER }}
-          STAGING_DEPLOY_PATH: ${{ vars.STAGING_DEPLOY_PATH }}
-          DEPLOY_SHA: ${{ inputs.source_sha }}
-        with:
-          host: ${{ vars.STAGING_SSH_HOST }}
-          username: ${{ secrets.STAGING_SSH_USER }}
-          key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
-          envs: >- 
-            BACKEND_IMAGE,GHCR_TOKEN,GHCR_USER,STAGING_DEPLOY_PATH,DEPLOY_SHA
-          script: |
-            set -euo pipefail
-            
-            cd "${STAGING_DEPLOY_PATH}"
-            
-            git fetch origin dev
-            git checkout --detach "${DEPLOY_SHA}"
-            
-            test "$(git rev-parse HEAD)" = "${DEPLOY_SHA}"
-            
-            bash deploy/scripts/deploy-staging.sh
-=======
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -153,7 +105,6 @@ jobs:
             git checkout dev
             git pull --ff-only origin dev
             bash deploy/scripts/deploy.sh
->>>>>>> Stashed changes:.github/workflows/deploy.yml
 
   backend-smoke:
     name: backend-smoke
