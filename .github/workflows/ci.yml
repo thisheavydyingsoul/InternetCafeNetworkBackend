@@ -139,3 +139,5 @@ jobs:
     with:
       environment: ${{ github.ref_name == 'dev' && 'staging' || github.ref_name == 'main' && 'production' || '' }}
       ref: ${{ github.ref_name }}
+      image_tag: ${{ needs.backend-docker-build.outputs.image_tag }}
+      source_sha: ${{ github.sha }}

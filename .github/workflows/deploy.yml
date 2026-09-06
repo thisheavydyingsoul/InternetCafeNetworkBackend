@@ -7,6 +7,7 @@ on:
         description: Immutable backend image tag
         required: true
         type: string
+
       source_sha:
         description: Commit SHA validated by CI
         required: true
@@ -15,6 +16,7 @@ on:
       environment:
         required: true
         type: string
+
       ref:
         required: true
         type: string
