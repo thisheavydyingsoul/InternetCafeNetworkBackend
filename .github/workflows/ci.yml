@@ -16,6 +16,7 @@ on:
 
 permissions:
   contents: read
+  packages: write
 
 concurrency:
   group: backend-ci-${{ github.workflow }}-${{ github.ref }}
@@ -122,3 +123,21 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  backend-deploy:
+    name: backend-deploy
+    if: >
+      github.event_name == 'push' &&
+      (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main')
+    needs:
+      - backend-integration
+      - backend-docker-build
+      - backend-security
+
+    uses: ./.github/workflows/deploy.yml
+
+    with:
+      environment: ${{ github.ref_name == 'dev' && 'staging' || github.ref_name == 'main' && 'production' || '' }}
+      ref: ${{ github.ref_name }}
+      image_tag: ${{ needs.backend-docker-build.outputs.image_tag }}
+      source_sha: ${{ github.sha }}
