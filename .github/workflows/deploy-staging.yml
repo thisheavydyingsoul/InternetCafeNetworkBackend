@@ -12,20 +12,6 @@ on:
         required: true
         type: string
 
-    secrets:
-      staging_ssh_user:
-        description: SSH username for staging VM
-        required: true
-      staging_ssh_private_key:
-        description: SSH private key for staging VM
-        required: true
-      staging_ghcr_token:
-        description: GHCR pull token for staging VM
-        required: true
-      staging_ghcr_user:
-        description: GHCR username for staging VM
-        required: true
-
 permissions:
   contents: read
   packages: write
