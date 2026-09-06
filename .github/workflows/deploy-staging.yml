@@ -1,30 +1,10 @@
 name: Backend deploy staging
 
 on:
-  workflow_call:
-    inputs:
-      image_tag:
-        description: Immutable backend image tag
-        required: true
-        type: string
-      source_sha:
-        description: Commit SHA validated by CI
-        required: true
-        type: string
-
-    secrets:
-      staging_ssh_user:
-        description: SSH username for staging VM
-        required: true
-      staging_ssh_private_key:
-        description: SSH private key for staging VM
-        required: true
-      staging_ghcr_token:
-        description: GHCR pull token for staging VM
-        required: true
-      staging_ghcr_user:
-        description: GHCR username for staging VM
-        required: true
+  workflow_run:
+    workflows: ["Backend CI"]
+    branches: [dev]
+    types: completed
 
 permissions:
   contents: read
@@ -37,24 +17,16 @@ concurrency:
 jobs:
   build-and-push:
     name: backend-build-and-push-staging
+    if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     outputs:
       image_tag: ${{ steps.meta.outputs.image_tag }}
 
     steps:
-      - name: Checkout CI-validated commit
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.source_sha }}
-          fetch-depth: 1
-
-      - name: Verify source version
-        shell: bash
-        run: |
-          set -euo pipefail
-          echo "Expected SHA: ${{ inputs.source_sha }}"
-          echo "Actual SHA:   $(git rev-parse HEAD)"
-          test "$(git rev-parse HEAD)" = "${{ inputs.source_sha }}"
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -65,9 +37,7 @@ jobs:
 
       - name: Define immutable image tag
         id: meta
-        run: |
-          set -euo pipefail
-          echo "image_tag=${{ inputs.image_tag }}" >> "$GITHUB_OUTPUT"
+        run: echo "image_tag=sha-${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -88,31 +58,28 @@ jobs:
       url: http://${{ vars.STAGING_HOST }}:8080/api/actuator/health
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
       - name: Deploy to staging VM
         uses: appleboy/ssh-action@v1.2.0
         env:
-          BACKEND_IMAGE: >-
-            ghcr.io/${{ github.repository_owner }}/internet-cafe-api:${{ needs.build-and-push.outputs.image_tag }}
+          BACKEND_IMAGE: ghcr.io/${{ github.repository_owner }}/internet-cafe-api:${{ needs.build-and-push.outputs.image_tag }}
           GHCR_TOKEN: ${{ secrets.STAGING_GHCR_TOKEN }}
           GHCR_USER: ${{ secrets.STAGING_GHCR_USER }}
           STAGING_DEPLOY_PATH: ${{ vars.STAGING_DEPLOY_PATH }}
-          DEPLOY_SHA: ${{ inputs.source_sha }}
         with:
-          host: ${{ vars.STAGING_SSH_HOST }}
+          host: ${{ secrets.STAGING_SSH_HOST }}
           username: ${{ secrets.STAGING_SSH_USER }}
           key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
-          envs: >- 
-            BACKEND_IMAGE,GHCR_TOKEN,GHCR_USER,STAGING_DEPLOY_PATH,DEPLOY_SHA
+          envs: BACKEND_IMAGE,GHCR_TOKEN,GHCR_USER,STAGING_DEPLOY_PATH
           script: |
-            set -euo pipefail
-            
             cd "${STAGING_DEPLOY_PATH}"
-            
             git fetch origin dev
-            git checkout --detach "${DEPLOY_SHA}"
-            
-            test "$(git rev-parse HEAD)" = "${DEPLOY_SHA}"
-            
+            git checkout dev
+            git pull --ff-only origin dev
             bash deploy/scripts/deploy-staging.sh
 
   backend-staging-smoke:
@@ -128,13 +95,10 @@ jobs:
           username: ${{ secrets.STAGING_SSH_USER }}
           key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
           script: |
-            set -euo pipefail
-            
             set -a
             source /opt/internet-cafe-staging/docker/.env
             set +a
-            
-            curl --fail --show-error --retry 5 --retry-delay 5 \
+            curl --fail --retry 5 --retry-delay 5 \
               -u "actuator:${ACTUATOR_PASSWORD}" \
               http://localhost:8080/api/actuator/health
 
