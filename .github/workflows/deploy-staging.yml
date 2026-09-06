@@ -84,7 +84,7 @@ jobs:
           STAGING_DEPLOY_PATH: ${{ vars.STAGING_DEPLOY_PATH }}
           DEPLOY_SHA: ${{ inputs.source_sha }}
         with:
-          host: ${{ secrets.STAGING_SSH_HOST }}
+          host: ${{ vars.STAGING_SSH_HOST }}
           username: ${{ secrets.STAGING_SSH_USER }}
           key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
           envs: >- 
