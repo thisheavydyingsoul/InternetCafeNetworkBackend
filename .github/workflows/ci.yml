@@ -16,6 +16,7 @@ on:
 
 permissions:
   contents: read
+  packages: write
 
 concurrency:
   group: backend-ci-${{ github.workflow }}-${{ github.ref }}
@@ -122,3 +123,17 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-staging:
+    name: call-staging-deploy
+    needs:
+      - backend-integration
+      - backend-docker-build
+      - backend-security
+    if: >-
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/dev'
+    uses: ./.github/workflows/deploy-staging.yml
+    with:
+      source_sha: ${{ github.sha }}
+      image_tag: sha-${{ github.sha }}
