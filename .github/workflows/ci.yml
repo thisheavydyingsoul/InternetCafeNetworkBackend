@@ -124,31 +124,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-<<<<<<< Updated upstream
-  deploy-staging:
-    name: call-staging-deploy
-=======
-  backend-deploy-staging:
-    name: backend-deploy-staging
-    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
->>>>>>> Stashed changes
+  backend-deploy:
+    name: backend-deploy
+    if: >
+      github.event_name == 'push' &&
+      (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main')
     needs:
       - backend-integration
       - backend-docker-build
       - backend-security
-<<<<<<< Updated upstream
-    if: >-
-      github.event_name == 'push' &&
-      github.ref == 'refs/heads/dev'
-    uses: ./.github/workflows/deploy-staging.yml
-    with:
-      source_sha: ${{ github.sha }}
-      image_tag: sha-${{ github.sha }}
-=======
 
-    uses: ./.github/workflows/deploy-staging.yml
+    uses: ./.github/workflows/deploy.yml
 
     with:
-      environment: staging
+      environment: ${{ github.ref_name == 'dev' && 'staging' || github.ref_name == 'main' && 'production' || '' }}
       ref: ${{ github.ref_name }}
->>>>>>> Stashed changes
