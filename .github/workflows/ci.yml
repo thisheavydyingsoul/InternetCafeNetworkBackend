@@ -14,6 +14,8 @@ on:
       - dev
       - main
 
+  workflow_dispatch: {}
+
 permissions:
   contents: read
   packages: write
@@ -149,7 +151,7 @@ jobs:
   backend-deploy:
     name: backend-deploy
     if: >
-      github.event_name == 'push' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
       (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main')
     needs:
       - backend-integration
