@@ -1,0 +1,105 @@
+name: Backend deploy
+
+on:
+  workflow_call:
+    inputs:
+      image_tag:
+        description: Immutable backend image tag
+        required: true
+        type: string
+
+      source_sha:
+        description: Commit SHA validated by CI
+        required: true
+        type: string
+
+      environment:
+        required: true
+        type: string
+
+      ref:
+        required: true
+        type: string
+
+    secrets:
+      SSH_HOST:
+        required: true
+      SSH_USER:
+        required: true
+      SSH_PRIVATE_KEY:
+        required: true
+      GHCR_TOKEN:
+        required: true
+      GHCR_USER:
+        required: true
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: backend-${{ inputs.environment }}-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: backend-deploy-${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment }}
+
+    steps:
+      - name: Checkout validated commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_sha }}
+
+      - name: Deploy to ${{ inputs.environment }} VM
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          BACKEND_IMAGE: ghcr.io/${{ github.repository_owner }}/internet-cafe-api:${{ inputs.image_tag }}
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          GHCR_USER: ${{ secrets.GHCR_USER }}
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+          COMPOSE_FILE: docker/docker-compose.${{ inputs.environment }}.yml
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: BACKEND_IMAGE,GHCR_TOKEN,GHCR_USER,DEPLOY_PATH,COMPOSE_FILE
+          script: |
+            cd "${DEPLOY_PATH}"
+            git fetch origin "${{ inputs.ref }}"
+            git checkout "${{ inputs.source_sha }}"
+            bash deploy/scripts/deploy.sh
+
+  backend-smoke:
+    name: backend-smoke
+    runs-on: ubuntu-latest
+    needs: deploy
+    environment:
+      name: ${{ inputs.environment }}
+
+    steps:
+      - name: Health check via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -euo pipefail
+            
+            set -a
+            source /opt/internet-cafe-${{ inputs.environment }}/docker/.env
+            set +a
+            
+            curl --fail --show-error --retry 5 --retry-delay 5 \
+              -u "actuator:${ACTUATOR_PASSWORD}" \
+              http://localhost:8080/api/actuator/health
+
+
+
+
+
+
