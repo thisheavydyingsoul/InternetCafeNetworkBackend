@@ -14,8 +14,11 @@ on:
       - dev
       - main
 
+  workflow_dispatch: {}
+
 permissions:
   contents: read
+  packages: write
 
 concurrency:
   group: backend-ci-${{ github.workflow }}-${{ github.ref }}
@@ -94,19 +97,41 @@ jobs:
     runs-on: ubuntu-latest
     needs: backend-build
 
+    outputs:
+      image_tag: ${{ steps.meta.outputs.image_tag }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Define immutable image tag
+        id: meta
+        shell: bash
+        run: |
+          echo "image_tag=sha-${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify image tag
+        shell: bash
+        run: |
+          test -n "${{ steps.meta.outputs.image_tag }}"
+          echo "Will publish tag: ${{ steps.meta.outputs.image_tag }}"
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build backend image
+      - name: Build and push backend image
         uses: docker/build-push-action@v6
         with:
           context: .
-          push: false
-          tags: internet-cafe-api:ci
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/internet-cafe-api:${{ steps.meta.outputs.image_tag }}
 
   backend-security:
     name: backend-security
@@ -122,3 +147,23 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  backend-deploy:
+    name: backend-deploy
+    if: >
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main')
+    needs:
+      - backend-integration
+      - backend-docker-build
+      - backend-security
+
+    uses: ./.github/workflows/deploy.yml
+
+    with:
+      environment: ${{ github.ref_name == 'dev' && 'staging' || github.ref_name == 'main' && 'production' || '' }}
+      ref: ${{ github.ref_name }}
+      image_tag: ${{ needs.backend-docker-build.outputs.image_tag }}
+      source_sha: ${{ github.sha }}
+
+    secrets: inherit
