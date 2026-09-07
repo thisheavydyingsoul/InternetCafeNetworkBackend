@@ -21,6 +21,18 @@ on:
         required: true
         type: string
 
+    secrets:
+      SSH_HOST:
+        required: true
+      SSH_USER:
+        required: true
+      SSH_PRIVATE_KEY:
+        required: true
+      GHCR_TOKEN:
+        required: true
+      GHCR_USER:
+        required: true
+
 permissions:
   contents: read
   packages: write

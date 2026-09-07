@@ -165,3 +165,5 @@ jobs:
       ref: ${{ github.ref_name }}
       image_tag: ${{ needs.backend-docker-build.outputs.image_tag }}
       source_sha: ${{ github.sha }}
+
+    secrets: inherit
