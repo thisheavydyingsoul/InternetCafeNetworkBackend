@@ -61,7 +61,7 @@ jobs:
           GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
           GHCR_USER: ${{ secrets.GHCR_USER }}
           DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
-          COMPOSE_FILE: docker/docker-compose-${{ inputs.environment }}.yml
+          COMPOSE_FILE: docker/docker-compose.${{ inputs.environment }}.yml
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
