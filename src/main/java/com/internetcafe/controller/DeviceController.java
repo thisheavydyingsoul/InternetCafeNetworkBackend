@@ -41,4 +41,10 @@ public class DeviceController {
     public ResponseEntity<List<DeviceResponse>> getAvailableDevicesByOffice(@PathVariable String officeId) {
         return ResponseEntity.ok(deviceService.getAvailableDevicesByOffice(officeId));
     }
+
+    @GetMapping("/office/{officeId}/{deviceTypeId}/available")
+    @Operation(summary = "Получить доступные устройства данного типа в офисе")
+    public ResponseEntity<List<DeviceResponse>> getAvailableDevicesByOfficeAndType(@PathVariable String officeId, @PathVariable String deviceTypeId) {
+        return ResponseEntity.ok(deviceService.getAvailableDevicesByOfficeAndType(officeId, deviceTypeId));
+    }
 }

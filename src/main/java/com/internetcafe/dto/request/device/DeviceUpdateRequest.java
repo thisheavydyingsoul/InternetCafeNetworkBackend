@@ -18,9 +18,7 @@ public class DeviceUpdateRequest {
 
     private String officeId;
 
-    private String type;
-
-    private String name;
+    private String typeId;
 
     private DeviceCondition condition;
 
@@ -29,8 +27,4 @@ public class DeviceUpdateRequest {
 
     @DecimalMin(value = "0.01", message = "Night rate must be greater than zero")
     private BigDecimal nightRate;
-
-    private String description;
-
-    private String imageUrl;
 }

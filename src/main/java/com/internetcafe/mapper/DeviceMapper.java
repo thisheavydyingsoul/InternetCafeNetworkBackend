@@ -13,7 +13,11 @@ import java.util.stream.Collectors;
 public interface DeviceMapper {
 
     @Mapping(target = "officeId", source = "office.id")
+    @Mapping(target = "deviceTypeId", source = "deviceType.id")
     @Mapping(target = "officeAddress", source = "office.address")
+    @Mapping(target = "deviceTypeName", source = "deviceType.displayName")
+    @Mapping(target = "deviceTypeImageUrl", source = "deviceType.imageUrl")
+    @Mapping(target = "deviceTypeDescription", source = "deviceType.description")
     @Mapping(target = "gameNames", source = "games", qualifiedByName = "mapGameNames")
     DeviceResponse toResponse(Device device);
 
@@ -24,6 +28,7 @@ public interface DeviceMapper {
     @Mapping(target = "office", ignore = true)
     @Mapping(target = "games", ignore = true)
     @Mapping(target = "rents", ignore = true)
+    @Mapping(target = "type", ignore = true)
     Device toEntity(DeviceCreateRequest request);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -34,6 +39,7 @@ public interface DeviceMapper {
     @Mapping(target = "office", ignore = true)
     @Mapping(target = "games", ignore = true)
     @Mapping(target = "rents", ignore = true)
+    @Mapping(target = "type", ignore = true)
     void updateEntity(DeviceUpdateRequest request, @MappingTarget Device device);
 
     @Named("mapGameNames")

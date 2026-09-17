@@ -1,5 +1,5 @@
 set -euo pipefail
-DEPLOY_DIR="${STAGING_DEPLOY_PATH:-/opt/internet-cafe-staging}"
+DEPLOY_DIR="${STAGING_DEPLOY_PATH:-/opt/internet-cafe-backend-staging}"
 COMPOSE_FILE="docker/docker-compose.staging.yml"
 ENV_FILE="docker/.env"
 
