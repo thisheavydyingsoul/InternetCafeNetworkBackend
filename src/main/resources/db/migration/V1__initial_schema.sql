@@ -184,4 +184,4 @@ CREATE INDEX idx_payment_rent ON payments(rent_id);
 
 
 CREATE INDEX idx_device_types_active ON device_types(is_active);
-CREATE INDEX idx_devices_device_type ON devices(device);
+CREATE INDEX idx_devices_device_type ON devices(device_type_id);
