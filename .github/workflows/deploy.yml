@@ -71,7 +71,7 @@ jobs:
             cd "${DEPLOY_PATH}"
             git fetch origin "${{ inputs.ref }}"
             git checkout "${{ inputs.source_sha }}"
-            bash deploy/scripts/deploy.sh
+            bash deploy/scripts/deploy-"${{ inputs.environment }}".sh
 
   backend-smoke:
     name: backend-smoke
