@@ -6,6 +6,8 @@ import com.internetcafe.entity.Device;
 import com.internetcafe.enums.DeviceCondition;
 import com.internetcafe.support.AbstractIntegrationTest;
 import java.util.List;
+
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,6 +16,7 @@ class DeviceRepositoryIntegrationTest extends AbstractIntegrationTest {
     @Autowired
     private DeviceRepository deviceRepository;
 
+    @Transactional
     @Test
     void findsSeededDeviceAfterFlywayMigrations() {
         Device device = deviceRepository.findById("device-001")
