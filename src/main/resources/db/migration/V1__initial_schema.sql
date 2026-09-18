@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS device_types (
     version BIGINT DEFAULT 0,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
-    )
+    );
 
 CREATE TABLE IF NOT EXISTS devices (
     id VARCHAR(36) PRIMARY KEY,
