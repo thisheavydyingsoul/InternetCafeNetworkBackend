@@ -39,14 +39,14 @@ ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO devices (
     id, office_id, type_id, condition,
-    day_rate, night_rate,
+    day_rate, night_rate
 )
 VALUES (
            'device-001',
            'office-001',
            'dtype-001',
            'WORKING',
-           500.00, 300.00,
+           500.00, 300.00
        ) ON CONFLICT (id) DO NOTHING;
 
 
