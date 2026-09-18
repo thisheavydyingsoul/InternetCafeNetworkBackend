@@ -38,7 +38,7 @@ VALUES
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO devices (
-    id, office_id, type_id, condition,
+    id, office_id, device_type_id, condition,
     day_rate, night_rate
 )
 VALUES (
