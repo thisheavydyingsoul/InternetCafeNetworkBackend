@@ -54,7 +54,7 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public List<DeviceResponse> getAvailableDevicesByOfficeAndType(String officeId, String typeId) {
-        return deviceRepository.findAvailableDevicesByOfficeAndType(officeId, typeId)
+        return deviceRepository.findAvailableDevicesByOfficeAndType(officeId, typeId).stream()
                 .map(deviceMapper::toResponse)
                 .collect(Collectors.toList());
     }
