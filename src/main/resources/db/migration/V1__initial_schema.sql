@@ -40,6 +40,17 @@ CREATE TABLE IF NOT EXISTS clients (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
+CREATE TABLE IF NOT EXISTS device_types (
+                                            id VARCHAR(36) PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    display_name VARCHAR(100) NOT NULL,
+    description TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    image_url VARCHAR(255),
+    version BIGINT DEFAULT 0,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+    )
 
 CREATE TABLE IF NOT EXISTS devices (
     id VARCHAR(36) PRIMARY KEY,
@@ -54,18 +65,6 @@ CREATE TABLE IF NOT EXISTS devices (
     CONSTRAINT fk_device_office FOREIGN KEY (office_id) REFERENCES offices(id),
     CONSTRAINT fk_device_type FOREIGN KEY (device_type_id) REFERENCES device_types(id)
     );
-
-CREATE TABLE IF NOT EXISTS device_types (
-    id VARCHAR(36) PRIMARY KEY,
-    code VARCHAR(50) NOT NULL UNIQUE,
-    display_name VARCHAR(100) NOT NULL,
-    description TEXT,
-    is_active BOOLEAN DEFAULT TRUE,
-    image_url VARCHAR(255),
-    version BIGINT DEFAULT 0,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
-)
 
 CREATE TABLE IF NOT EXISTS games (
     id VARCHAR(36) PRIMARY KEY,
