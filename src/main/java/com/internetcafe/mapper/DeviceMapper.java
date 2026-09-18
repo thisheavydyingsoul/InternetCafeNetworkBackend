@@ -26,7 +26,7 @@ public interface DeviceMapper {
     @Mapping(target = "office", ignore = true)
     @Mapping(target = "games", ignore = true)
     @Mapping(target = "rents", ignore = true)
-    @Mapping(target = "type", ignore = true)
+    @Mapping(target = "deviceType", ignore = true)
     Device toEntity(DeviceCreateRequest request);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -37,7 +37,7 @@ public interface DeviceMapper {
     @Mapping(target = "office", ignore = true)
     @Mapping(target = "games", ignore = true)
     @Mapping(target = "rents", ignore = true)
-    @Mapping(target = "type", ignore = true)
+    @Mapping(target = "deviceType", ignore = true)
     void updateEntity(DeviceUpdateRequest request, @MappingTarget Device device);
 
     @Named("mapGameNames")
