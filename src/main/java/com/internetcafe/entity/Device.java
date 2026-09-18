@@ -17,6 +17,7 @@ import java.util.Set;
 @Setter
 public class Device extends BaseEntity {
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private String condition;
 
