@@ -35,7 +35,7 @@ VALUES
     ('dtype-002', 'PS4', 'PlayStation 4', 'Sony PlayStation 4', TRUE),
     ('dtype-003', 'XBOX_SERIES_X', 'Xbox Series X', 'Microsoft Xbox Series X', TRUE),
     ('dtype-004', 'XBOX_SERIES_S', 'Xbox Series S', 'Microsoft Xbox Series S', TRUE)
-ON CONFLICT (id) DO NOTHING
+ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO devices (
     id, office_id, type_id, condition,
