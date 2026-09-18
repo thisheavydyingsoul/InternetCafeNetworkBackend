@@ -19,7 +19,7 @@ public class Device extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String condition;
+    private DeviceCondition condition;
 
     @Column(name = "day_rate", nullable = false, precision = 10, scale = 2)
     private BigDecimal dayRate;
