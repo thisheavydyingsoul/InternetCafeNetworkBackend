@@ -54,6 +54,7 @@ services:
       KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=ruok"
     volumes:
       - zookeeper_data_staging:/var/lib/zookeeper/data
+      - zookeeper_log_staging:/var/lib/zookeeper/log
     healthcheck:
       test:
         [
@@ -77,11 +78,17 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+
     volumes:
       - kafka_data_staging:/var/lib/kafka/data
     healthcheck:
@@ -182,6 +189,7 @@ volumes:
   redis_data_staging:
   kafka_data_staging:
   zookeeper_data_staging:
+  zookeeper_log_staging:
 
 networks:
   internet-cafe-network-staging:
