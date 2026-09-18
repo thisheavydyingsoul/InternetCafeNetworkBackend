@@ -18,6 +18,7 @@ echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
 export BACKEND_IMAGE="${BACKEND_IMAGE:?BACKEND_IMAGE is required}"
 
 echo "Deploying image: ${BACKEND_IMAGE}"
+docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" down -v --remove-orphans
 docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" pull backend
 docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --remove-orphans
 

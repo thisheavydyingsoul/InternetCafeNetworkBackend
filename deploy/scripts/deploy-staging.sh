@@ -6,7 +6,7 @@ ENV_FILE="docker/.env"
 cd "$DEPLOY_DIR"
 
 echo "Logging in to GHCR..."
-ecgo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
 
 export BACKEND_IMAGE="${BACKEND_IMAGE:?BACKEND_IMAGE is required}"
 
@@ -18,7 +18,7 @@ docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --remove-orphans
 echo "Waiting for health..."
 for i in $(seq 1 30); do
   if curl -sf -u "actuator:${ACTUATOR_PASSWORD}" \
-    http://localhost:8080/api/actuator/health >/dev/null 2>2&1; then
+    http://localhost:8080/api/actuator/health >/dev/null 2>&1; then
     echo "Staging health OK"
     exit 0
   fi
