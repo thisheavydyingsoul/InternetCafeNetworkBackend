@@ -19,8 +19,8 @@ class DeviceRepositoryIntegrationTest extends AbstractIntegrationTest {
         Device device = deviceRepository.findById("device-001")
                 .orElseThrow();
 
-        assertThat(device.getName()).isEqualTo("PlayStation 5");
-        assertThat(device.getType()).isEqualTo("PS5");
+        assertThat(device.getDeviceType().getDisplayName()).isEqualTo("PlayStation 5");
+        assertThat(device.getDeviceType().getCode()).isEqualTo("PS5");
         assertThat(device.getCondition()).isEqualTo(DeviceCondition.WORKING);
     }
 
