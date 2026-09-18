@@ -6,6 +6,8 @@ import com.internetcafe.entity.Device;
 import com.internetcafe.enums.DeviceCondition;
 import com.internetcafe.support.AbstractIntegrationTest;
 import java.util.List;
+
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,13 +16,14 @@ class DeviceRepositoryIntegrationTest extends AbstractIntegrationTest {
     @Autowired
     private DeviceRepository deviceRepository;
 
+    @Transactional
     @Test
     void findsSeededDeviceAfterFlywayMigrations() {
         Device device = deviceRepository.findById("device-001")
                 .orElseThrow();
 
-        assertThat(device.getName()).isEqualTo("PlayStation 5");
-        assertThat(device.getType()).isEqualTo("PS5");
+        assertThat(device.getDeviceType().getDisplayName()).isEqualTo("PlayStation 5");
+        assertThat(device.getDeviceType().getCode()).isEqualTo("PS5");
         assertThat(device.getCondition()).isEqualTo(DeviceCondition.WORKING);
     }
 

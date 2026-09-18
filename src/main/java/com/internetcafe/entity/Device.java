@@ -17,14 +17,8 @@ import java.util.Set;
 @Setter
 public class Device extends BaseEntity {
 
-    @Column(nullable = false)
-    private String type;
-
-    @Column(nullable = false, length = 100)
-    private String name;
-
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false)
     private DeviceCondition condition;
 
     @Column(name = "day_rate", nullable = false, precision = 10, scale = 2)
@@ -33,15 +27,13 @@ public class Device extends BaseEntity {
     @Column(name = "night_rate", nullable = false, precision = 10, scale = 2)
     private BigDecimal nightRate;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
-
-    @Column(name = "image_url")
-    private String imageUrl;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "office_id", nullable = false)
     private Office office;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="device_type_id")
+    private DeviceType deviceType;
 
     @ManyToMany
     @JoinTable(

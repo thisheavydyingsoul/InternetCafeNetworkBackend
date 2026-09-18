@@ -20,11 +20,8 @@ public class DeviceCreateRequest {
     @NotBlank(message = "Office id is required")
     private String officeId;
 
-    @NotBlank(message = "Type is required")
-    private String type;
-
-    @NotBlank(message = "Name is required")
-    private String name;
+    @NotBlank(message = "Type id is required")
+    private String typeId;
 
     @NotNull(message = "Condition is required")
     private DeviceCondition condition;
@@ -36,8 +33,4 @@ public class DeviceCreateRequest {
     @NotNull(message = "Night rate is required")
     @DecimalMin(value = "0.01", message = "Night rate must be greater than zero")
     private BigDecimal nightRate;
-
-    private String description;
-
-    private String imageUrl;
 }

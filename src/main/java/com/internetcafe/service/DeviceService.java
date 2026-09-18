@@ -15,6 +15,7 @@ public interface DeviceService {
 
     List<DeviceResponse> getAvailableDevicesByOffice(String officeId);
 
+    List<DeviceResponse> getAvailableDevicesByOfficeAndType(String officeId, String typeId);
     //DeviceResponse create(DeviceCreateRequest request);
 
     //DeviceResponse update(DeviceUpdateRequest request);

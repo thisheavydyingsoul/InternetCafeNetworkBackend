@@ -52,6 +52,13 @@ public class DeviceServiceImpl implements DeviceService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<DeviceResponse> getAvailableDevicesByOfficeAndType(String officeId, String typeId) {
+        return deviceRepository.findAvailableDevicesByOfficeAndType(officeId, typeId).stream()
+                .map(deviceMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
     private Device getDeviceWithDetails(String id) {
         return deviceRepository.findWithDetailsById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Device", id));

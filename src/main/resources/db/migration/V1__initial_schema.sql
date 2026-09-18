@@ -40,23 +40,31 @@ CREATE TABLE IF NOT EXISTS clients (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
+CREATE TABLE IF NOT EXISTS device_types (
+                                            id VARCHAR(36) PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    display_name VARCHAR(100) NOT NULL,
+    description TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    image_url VARCHAR(255),
+    version BIGINT DEFAULT 0,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+    );
 
 CREATE TABLE IF NOT EXISTS devices (
     id VARCHAR(36) PRIMARY KEY,
     office_id VARCHAR(36) NOT NULL,
-    type VARCHAR(50) NOT NULL,
-    name VARCHAR(100) NOT NULL,
+    device_type_id VARCHAR(36) NOT NULL,
     condition VARCHAR(20) NOT NULL CHECK (condition IN ('WORKING', 'DAMAGED', 'IN_REPAIR', 'WRITTEN_OFF')),
     day_rate DECIMAL(10, 2) NOT NULL,
     night_rate DECIMAL(10, 2) NOT NULL,
-    description TEXT,
-    image_url VARCHAR(255),
     version BIGINT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_device_office FOREIGN KEY (office_id) REFERENCES offices(id)
+    CONSTRAINT fk_device_office FOREIGN KEY (office_id) REFERENCES offices(id),
+    CONSTRAINT fk_device_type FOREIGN KEY (device_type_id) REFERENCES device_types(id)
     );
-
 
 CREATE TABLE IF NOT EXISTS games (
     id VARCHAR(36) PRIMARY KEY,
@@ -136,7 +144,8 @@ CREATE TABLE IF NOT EXISTS payments (
     id VARCHAR(36) PRIMARY KEY,
     rent_id VARCHAR(36) NOT NULL,
     amount DECIMAL(10, 2) NOT NULL,
-    status VARCHAR(20) NOT NULL CHECK (status IN ('PENDING', 'SUCCESS', 'FAILED', 'REFUNDED')),
+    status VARCHAR(20) NOT NULL CHECK (status IN ('PENDING', 'SUCCESS', 'FAILED',
+                                                  'CANCELLED', 'EXPIRED', 'REFUNDED', 'PARTIALLY_REFUNDED')),
     provider VARCHAR(20) NOT NULL DEFAULT 'MOCK',
     external_transaction_id VARCHAR(100),
     paid_at TIMESTAMP,
@@ -172,3 +181,7 @@ CREATE INDEX idx_outbox_status_created ON outbox_events(status, created_at);
 
 CREATE INDEX idx_payment_status ON payments(status);
 CREATE INDEX idx_payment_rent ON payments(rent_id);
+
+
+CREATE INDEX idx_device_types_active ON device_types(is_active);
+CREATE INDEX idx_devices_device_type ON devices(device_type_id);

@@ -15,14 +15,12 @@ import java.util.Set;
 @AllArgsConstructor
 public class DeviceResponse {
     private String id;
-    private String type;
-    private String name;
     private DeviceCondition condition;
     private BigDecimal dayRate;
     private BigDecimal nightRate;
-    private String description;
-    private String imageUrl;
-    private String officeId;
+    private String deviceTypeName;
+    private String deviceTypeImageUrl;
+    private String deviceTypeDescription;
     private String officeAddress;
     private Set<String> gameNames;
 }

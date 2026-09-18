@@ -29,19 +29,24 @@ VALUES (
            TRUE, 100.00
        ) ON CONFLICT (id) DO NOTHING;
 
+INSERT INTO device_types (id, code, display_name, description, is_active)
+VALUES
+    ('dtype-001', 'PS5', 'PlayStation 5', 'Sony PlayStation 5', TRUE),
+    ('dtype-002', 'PS4', 'PlayStation 4', 'Sony PlayStation 4', TRUE),
+    ('dtype-003', 'XBOX_SERIES_X', 'Xbox Series X', 'Microsoft Xbox Series X', TRUE),
+    ('dtype-004', 'XBOX_SERIES_S', 'Xbox Series S', 'Microsoft Xbox Series S', TRUE)
+ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO devices (
-    id, office_id, type, name, condition,
-    day_rate, night_rate, description
+    id, office_id, device_type_id, condition,
+    day_rate, night_rate
 )
 VALUES (
            'device-001',
            'office-001',
-           'PS5',
-           'PlayStation 5',
+           'dtype-001',
            'WORKING',
-           500.00, 300.00,
-           'Современная игровая консоль'
+           500.00, 300.00
        ) ON CONFLICT (id) DO NOTHING;
 
 
