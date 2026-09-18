@@ -12,8 +12,6 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface DeviceMapper {
 
-    @Mapping(target = "officeId", source = "office.id")
-    @Mapping(target = "deviceTypeId", source = "deviceType.id")
     @Mapping(target = "officeAddress", source = "office.address")
     @Mapping(target = "deviceTypeName", source = "deviceType.displayName")
     @Mapping(target = "deviceTypeImageUrl", source = "deviceType.imageUrl")

@@ -21,8 +21,6 @@ public class DeviceResponse {
     private String deviceTypeName;
     private String deviceTypeImageUrl;
     private String deviceTypeDescription;
-    private String officeId;
-    private String typeId;
     private String officeAddress;
     private Set<String> gameNames;
 }

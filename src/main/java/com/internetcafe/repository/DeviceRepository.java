@@ -19,8 +19,15 @@ public interface DeviceRepository extends JpaRepository<Device, String> {
             "AND d.condition = 'WORKING'")
     List<Device> findAvailableDevicesByOffice(@Param("officeId") String officeId);
 
+    @Query("SELECT d FROM Device d " +
+            "WHERE d.office.id = :officeId " +
+            "AND d.deviceType.id = :deviceTypeId " +
+            "AND d.condition = 'WORKING'")
+    List<Device> findAvailableDevicesByOfficeAndType(@Param("officeId") String officeId, @Param("deviceTypeId") String deviceTypeId);
+
     @EntityGraph(attributePaths = {"office", "games"})
     Optional<Device> findWithDetailsById(String id);
 
     boolean existsByGames_Id(String gameId);
+
 }

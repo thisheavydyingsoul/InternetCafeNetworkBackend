@@ -23,6 +23,9 @@ public class Device extends BaseEntity {
     @Column(nullable = false, length = 100)
     private String name;
 
+    @Column(nullable = false)
+    private String condition;
+
     @Column(name = "day_rate", nullable = false, precision = 10, scale = 2)
     private BigDecimal dayRate;
 
