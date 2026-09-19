@@ -91,7 +91,7 @@ jobs:
             set -euo pipefail
             
             set -a
-            source /opt/internet-cafe-${{ inputs.environment }}/docker/.env
+            source /opt/internet-cafe-backend-${{ inputs.environment }}/docker/.env
             set +a
             
             curl --fail --show-error --retry 5 --retry-delay 5 \
