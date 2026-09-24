@@ -2,6 +2,7 @@ package com.internetcafe.service.impl;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.internetcafe.config.AppAdminProperties;
+import com.internetcafe.config.JwtProperties;
 import com.internetcafe.dto.response.AdminProfileResponse;
 import com.internetcafe.dto.response.AuthResponse;
 import com.internetcafe.entity.Administrator;
@@ -15,10 +16,10 @@ import com.internetcafe.security.jwt.JwtService;
 import com.internetcafe.service.AdminAuditLogService;
 import com.internetcafe.service.AdminAuthService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Locale;
@@ -34,6 +35,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     private final AppAdminProperties appAdminProperties;
     private final JwtService jwtService;
     private final AdminAuditLogService adminAuditLogService;
+    private final JwtProperties jwtProperties;
 
     @Override
     @Transactional
@@ -49,7 +51,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
                 .map(e -> e.toLowerCase(Locale.ROOT))
                 .orElseThrow(() -> new UnauthorizedException("Email missing in Google token", "GOOGLE_TOKEN_INVALID"));
 
-        if (!AppAdminProperties.allowedEmailSet().contains(email)) {
+        if (!appAdminProperties.allowedEmailSet().contains(email)) {
             log.warn("Admin login denied: email {} not in allowlist", email);
             throw new ForbiddenException("This Google account is not allowed for admin access", "ADMIN_EMAIL_NOT_ALLOWED");
         }
@@ -103,7 +105,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     }
 
     @Override
-    @Transactional(readonly = true)
+    @Transactional(readOnly = true)
     public AuthResponse refresh(String refreshToken) {
         AdminPrincipal principal = jwtService.parseRefreshToken(refreshToken);
         Administrator admin = administratorRepository.findById(principal.getId())
@@ -118,14 +120,14 @@ public class AdminAuthServiceImpl implements AdminAuthService {
                 .accessToken(jwtService.createAccessToken(fresh))
                 .refreshToken(jwtService.createRefreshToken(fresh))
                 .tokenType("Bearer")
-                .expiresInMs(3600000L)
+                .expiresInMs(jwtProperties.getExpiration())
                 .admin(toProfile(admin))
                 .build();
     }
 
 
     @Override
-    @Transactional(readonly = true)
+    @Transactional(readOnly = true)
     public AdminProfileResponse me(AdminPrincipal principal) {
         Administrator admin = administratorRepository.findById(principal.getId())
                 .orElseThrow(() -> new UnauthorizedException("Administrator not found", "ADMIN_NOT_FOUND"));
@@ -135,6 +137,36 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 
     @Override
     @Transactional
-    public void logout
+    public void logout(AdminPrincipal principal, HttpServletRequest request) {
+        Administrator admin = administratorRepository.findById(principal.getId())
+                .orElseThrow(() -> new UnauthorizedException("Administrator not found", "ADMIN_NOT_FOUND"));
 
+        adminAuditLogService.record(
+                admin,
+                AuditAction.ADMIN_LOGOUT,
+                "Admin logged out",
+                clientIp(request),
+                request.getHeader("User-Agent")
+        );
+
+        log.info("Admin logout id={} email={}", admin.getId(), admin.getEmail());
+    }
+
+    private AdminProfileResponse toProfile(Administrator admin) {
+        return AdminProfileResponse.builder()
+                .id(admin.getId())
+                .email(admin.getEmail())
+                .fullName(admin.getFullName())
+                .hr(admin.isHr())
+                .role(admin.isHr() ? "HR_ADMIN" : "ADMIN")
+                .build();
+    }
+
+    private String clientIp(HttpServletRequest request) {
+        String forwarded = request.getHeader("X-Forwarded-For");
+        if (forwarded != null && !forwarded.isBlank()) {
+            return forwarded.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
+    }
 }

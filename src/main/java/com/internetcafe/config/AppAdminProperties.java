@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class AppAdminProperties {
     private String allowedEmails = "example@gmail.com";
 
-    public Set<String> allowedEmailsSet() {
+    public Set<String> allowedEmailSet() {
         return Arrays.stream(allowedEmails.split(","))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
