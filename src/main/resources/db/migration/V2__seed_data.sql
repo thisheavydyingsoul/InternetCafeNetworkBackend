@@ -3,13 +3,14 @@ VALUES ('office-001', 'г. Москва, ул. Тверская, д. 1')
     ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO administrators (
-    id, username, email,
+    id, username, email, full_name,
     email_verified, is_active, is_hr, office_id
 )
 VALUES (
            'admin-001',
            'admin',
            'izranovks@gmail.com',
+        'Izranov Kirill',
            TRUE,
            TRUE,
             TRUE,
