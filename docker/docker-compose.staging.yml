@@ -138,6 +138,7 @@ services:
       SERVER_PORT: 8080
       SPRING_SECURITY_USER_NAME: actuator
       SPRING_SECURITY_USER_PASSWORD: ${ACTUATOR_PASSWORD:?ACTUATOR_PASSWORD is required}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:?GOOGLE_CLIENT_ID is required}
     ports:
       - "8080:8080"
     networks:

@@ -30,8 +30,8 @@ set +a
 echo "Waiting for health..."
 for i in $(seq 1 30); do
   if curl -sf -u "actuator:${ACTUATOR_PASSWORD}" \
-    "$HEALTH_URL" >/dev/null 2>&1; then
-    echo "Health OK"
+    http://localhost:8080/api/actuator/health >/dev/null 2>&1; then
+    echo "Staging health OK"
     exit 0
   fi
   sleep 5
