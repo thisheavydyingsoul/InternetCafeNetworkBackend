@@ -1,7 +1,6 @@
 package com.internetcafe.service.impl;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.internetcafe.config.AppAdminProperties;
 import com.internetcafe.config.JwtProperties;
 import com.internetcafe.dto.response.AdminProfileResponse;
 import com.internetcafe.dto.response.AuthResponse;
@@ -32,7 +31,6 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 
     private final GoogleIdTokenVerifierService googleVerifier;
     private final AdministratorRepository administratorRepository;
-    private final AppAdminProperties appAdminProperties;
     private final JwtService jwtService;
     private final AdminAuditLogService adminAuditLogService;
     private final JwtProperties jwtProperties;
