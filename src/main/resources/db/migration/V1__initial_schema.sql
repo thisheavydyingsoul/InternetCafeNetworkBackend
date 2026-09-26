@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS offices (
 CREATE TABLE IF NOT EXISTS administrators (
                                               id VARCHAR(36) PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255),
+    google_sub VARCHAR(255) UNIQUE,
     full_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     email_verified BOOLEAN DEFAULT FALSE,
@@ -18,8 +19,8 @@ CREATE TABLE IF NOT EXISTS administrators (
     is_active BOOLEAN DEFAULT TRUE,
     is_hr BOOLEAN DEFAULT FALSE,
     office_id VARCHAR(36),
+    last_login_at TIMESTAMP,
     version BIGINT DEFAULT 0,
-    deleted_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_administrator_office FOREIGN KEY (office_id) REFERENCES offices(id)
@@ -29,7 +30,8 @@ CREATE TABLE IF NOT EXISTS administrators (
 CREATE TABLE IF NOT EXISTS clients (
                                        id VARCHAR(36) PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255),
+    google_sub VARCHAR(255) UNIQUE,
     full_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     email_verified BOOLEAN DEFAULT FALSE,
@@ -131,12 +133,17 @@ CREATE TABLE IF NOT EXISTS promos (
 
 CREATE TABLE IF NOT EXISTS logs (
     id VARCHAR(36) PRIMARY KEY,
-    administrator_id VARCHAR(36) NOT NULL,
+    administrator_id VARCHAR(36),
+    client_id VARCHAR(36),
+    action VARCHAR(50),
+    ip_address VARCHAR(50),
+    user_agent TEXT,
     contents TEXT NOT NULL,
     version BIGINT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_log_administrator FOREIGN KEY (administrator_id) REFERENCES administrators(id)
+    CONSTRAINT fk_log_administrator FOREIGN KEY (administrator_id) REFERENCES administrators(id),
+    CONSTRAINT fk_log_client FOREIGN KEY (client_id) REFERENCES clients(id)
     );
 
 
@@ -174,7 +181,7 @@ CREATE INDEX idx_rent_device_status_period ON rents(device_id, status, start_dat
 
 CREATE INDEX idx_client_email ON clients(email);
 CREATE INDEX idx_admin_email ON administrators(email);
-
+CREATE INDEX idx_admin_sub ON administrators(google_sub) WHERE google_sub IS NOT NULL;
 
 CREATE INDEX idx_outbox_status_created ON outbox_events(status, created_at);
 

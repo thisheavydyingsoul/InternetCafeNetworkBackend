@@ -14,8 +14,11 @@ public abstract class User extends BaseEntity {
     @Column(unique = true, nullable = false, length = 50)
     private String username;
 
-    @Column(nullable = false)
+    @Column
     private String passwordHash;
+
+    @Column(name="google_sub", unique = true)
+    private String googleSub;
 
     @Column(nullable = false, length = 100)
     private String fullName;

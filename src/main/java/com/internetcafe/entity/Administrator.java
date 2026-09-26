@@ -22,7 +22,8 @@ public class Administrator extends User {
     @JoinColumn(name = "office_id")
     private Office office;
 
-    private LocalDateTime deletedAt;
+    @Column(name="last_login_at")
+    private LocalDateTime lastLoginAt;
 
     @OneToMany(mappedBy = "administrator")
     private List<Log> logs = new ArrayList<>();
