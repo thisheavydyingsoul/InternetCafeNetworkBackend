@@ -1,4 +1,4 @@
-package com.internetcafe.security;
+package com.internetcafe.security.oauth;
 
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

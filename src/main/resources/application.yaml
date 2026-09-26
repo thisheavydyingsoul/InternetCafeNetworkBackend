@@ -111,5 +111,3 @@ app:
     resend-rate-limit-seconds: 60
     from: ${MAIL_FROM:}
     frontend-url: ${FRONTEND_URL:}
-  admin:
-    allowed-emails: ${ADMIN_ALLOWED_EMAILS:example@gmail.com}

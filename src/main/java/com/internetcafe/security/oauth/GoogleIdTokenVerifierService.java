@@ -1,4 +1,4 @@
-package com.internetcafe.security;
+package com.internetcafe.security.oauth;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;

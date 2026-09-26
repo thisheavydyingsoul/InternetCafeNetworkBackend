@@ -1,7 +1,7 @@
 package com.internetcafe.security.jwt;
 
 import com.internetcafe.exception.UnauthorizedException;
-import com.internetcafe.security.AdminPrincipal;
+import com.internetcafe.security.oauth.AdminPrincipal;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

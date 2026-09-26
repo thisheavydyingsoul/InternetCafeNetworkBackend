@@ -10,8 +10,8 @@ import com.internetcafe.enums.AuditAction;
 import com.internetcafe.exception.ForbiddenException;
 import com.internetcafe.exception.UnauthorizedException;
 import com.internetcafe.repository.AdministratorRepository;
-import com.internetcafe.security.AdminPrincipal;
-import com.internetcafe.security.GoogleIdTokenVerifierService;
+import com.internetcafe.security.oauth.AdminPrincipal;
+import com.internetcafe.security.oauth.GoogleIdTokenVerifierService;
 import com.internetcafe.security.jwt.JwtService;
 import com.internetcafe.service.AdminAuditLogService;
 import com.internetcafe.service.AdminAuthService;
@@ -51,12 +51,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
                 .map(e -> e.toLowerCase(Locale.ROOT))
                 .orElseThrow(() -> new UnauthorizedException("Email missing in Google token", "GOOGLE_TOKEN_INVALID"));
 
-        if (!appAdminProperties.allowedEmailSet().contains(email)) {
-            log.warn("Admin login denied: email {} not in allowlist", email);
-            throw new ForbiddenException("This Google account is not allowed for admin access", "ADMIN_EMAIL_NOT_ALLOWED");
-        }
-
-        Administrator admin = administratorRepository.findByEmail(email)
+        Administrator admin = administratorRepository.findByEmailIgnoreCaseAndIsActiveTrue((email))
                 .orElseThrow(() -> {
                     log.warn("Admin login denied: no administrator row for {}", email);
                     throw new ForbiddenException("No active administrator for this email", "ADMIN_NOT_FOUND");

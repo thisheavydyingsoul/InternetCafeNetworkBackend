@@ -10,5 +10,6 @@ import java.util.Optional;
 public interface AdministratorRepository extends JpaRepository<Administrator, String> {
     Optional<Administrator> findByEmail(String email);
     Optional<Administrator> findByUsername(String username);
-    long countByIsHrTrueAndIsActiveTrue(); // для проверки последнего HR
+
+    Optional<Administrator> findByEmailIgnoreCaseAndIsActiveTrue(String email);
 }

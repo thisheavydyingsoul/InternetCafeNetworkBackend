@@ -2,7 +2,7 @@ package com.internetcafe.security.jwt;
 
 import com.internetcafe.config.JwtProperties;
 import com.internetcafe.exception.UnauthorizedException;
-import com.internetcafe.security.AdminPrincipal;
+import com.internetcafe.security.oauth.AdminPrincipal;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
