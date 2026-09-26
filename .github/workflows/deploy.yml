@@ -71,7 +71,7 @@ jobs:
             cd "${DEPLOY_PATH}"
             git fetch origin "${{ inputs.ref }}"
             git checkout "${{ inputs.source_sha }}"
-            bash deploy/scripts/deploy.sh
+            bash deploy/scripts/deploy-"${{ inputs.environment }}".sh
 
   backend-smoke:
     name: backend-smoke
@@ -91,7 +91,7 @@ jobs:
             set -euo pipefail
             
             set -a
-            source /opt/internet-cafe-${{ inputs.environment }}/docker/.env
+            source /opt/internet-cafe-backend-${{ inputs.environment }}/docker/.env
             set +a
             
             curl --fail --show-error --retry 5 --retry-delay 5 \
