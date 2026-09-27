@@ -1,5 +1,6 @@
 set -euo pipefail
 ENV_FILE="docker/.env"
+PROJECT_NAME="internet-cafe-backend-staging"
 HEALTH_URL="${HEALTH_URL:-http://localhost:8080/api/actuator/health}"
 
 : "${DEPLOY_PATH:?DEPLOY_PATH is required}"
@@ -18,9 +19,16 @@ echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
 export BACKEND_IMAGE="${BACKEND_IMAGE:?BACKEND_IMAGE is required}"
 
 echo "Deploying image: ${BACKEND_IMAGE}"
-docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" down -v --remove-orphans
-docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" pull backend
-docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --remove-orphans
+
+docker compose -p "$PROJECT_NAME" \
+-f "$COMPOSE_FILE" --env-file "$ENV_FILE" \
+down -v --remove-orphans
+docker compose -p "$PROJECT_NAME" \
+-f "$COMPOSE_FILE" --env-file "$ENV_FILE" \
+pull backend
+docker compose -p "$PROJECT_NAME" \
+ -f "$COMPOSE_FILE" --env-file "$ENV_FILE" \
+up -d --remove-orphans
 
 set -a
 source "$ENV_FILE"
