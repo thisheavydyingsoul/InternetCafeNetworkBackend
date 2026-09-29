@@ -35,6 +35,7 @@ public class SecurityConfig {
                         requestMatchers(
                                 "/auth/admin/google",
                                 "/auth/admin/refresh",
+                                "/auth/admin/password-reset/**",
                                 "/actuator/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
