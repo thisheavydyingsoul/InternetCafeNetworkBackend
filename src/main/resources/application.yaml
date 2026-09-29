@@ -110,4 +110,4 @@ app:
     verification-ttl-hours: 24
     resend-rate-limit-seconds: 60
     from: ${MAIL_FROM:}
-    frontend-url: ${FRONTEND_URL:}
+    admin-frontend-url: ${ADMIN_FRONTEND_URL:http://localhost:4300}

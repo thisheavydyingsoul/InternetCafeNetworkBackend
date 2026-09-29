@@ -1,4 +1,4 @@
-package com.internetcafe.dto.request;
+package com.internetcafe.dto.request.auth;
 
 import jakarta.validation.constraints.NotBlank;
 

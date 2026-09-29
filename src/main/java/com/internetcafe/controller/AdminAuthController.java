@@ -1,7 +1,7 @@
 package com.internetcafe.controller;
 
-import com.internetcafe.dto.request.GoogleLoginRequest;
-import com.internetcafe.dto.request.RefreshTokenRequest;
+import com.internetcafe.dto.request.auth.GoogleLoginRequest;
+import com.internetcafe.dto.request.auth.RefreshTokenRequest;
 import com.internetcafe.dto.response.AdminProfileResponse;
 import com.internetcafe.dto.response.AuthResponse;
 import com.internetcafe.security.oauth.AdminPrincipal;
