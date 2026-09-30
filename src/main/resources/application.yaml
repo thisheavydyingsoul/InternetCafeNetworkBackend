@@ -108,6 +108,7 @@ cors:
 app:
   email:
     verification-ttl-hours: 24
+    password-reset-ttl-hours: 1
     resend-rate-limit-seconds: 60
     from: ${MAIL_FROM:}
     admin-frontend-url: ${ADMIN_FRONTEND_URL:http://localhost:4300}
