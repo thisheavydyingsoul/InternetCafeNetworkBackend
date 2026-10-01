@@ -9,12 +9,14 @@ import com.internetcafe.repository.OfficeRepository;
 import com.internetcafe.service.OfficeService;
 import lombok.RequiredArgsConstructor;
 import com.internetcafe.exception.ResourceNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -25,15 +27,18 @@ public class OfficeServiceImpl implements OfficeService {
 
     @Override
     public List<OfficeResponse> getAllOffices() {
-        return officeRepository.findAll().stream()
+        List<OfficeResponse> list = officeRepository.findAll().stream()
                 .map(officeMapper::toResponse)
                 .collect(Collectors.toList());
+        log.debug("Listing all offices count={}", list.size());
+        return list;
     }
 
     @Override
     public OfficeResponse getOfficeById(String id) {
         Office office = officeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Office not found with id: " + id));
+        log.debug("Getting office id={}", id);
         return officeMapper.toResponse(office);
     }
 
@@ -41,6 +46,7 @@ public class OfficeServiceImpl implements OfficeService {
     @Transactional
     public OfficeResponse create(OfficeCreateRequest request) {
         Office office = officeMapper.toEntity(request);
+        log.debug("Creating office address={}", request.getAddress());
         return officeMapper.toResponse(officeRepository.save(office));
     }
 
@@ -49,6 +55,7 @@ public class OfficeServiceImpl implements OfficeService {
     public OfficeResponse update(String id, OfficeUpdateRequest request) {
         Office office = getOfficeEntity(id);
         officeMapper.updateEntity(request, office);
+        log.debug("Updating office id={}", id);
         return officeMapper.toResponse(officeRepository.save(office));
     }
 

@@ -6,10 +6,12 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.internetcafe.config.GoogleOAuthProperties;
 import com.internetcafe.exception.UnauthorizedException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
+@Slf4j
 @Service
 public class GoogleIdTokenVerifierService {
 
@@ -41,6 +43,7 @@ public class GoogleIdTokenVerifierService {
         } catch (UnauthorizedException ex) {
             throw ex;
         } catch (Exception ex) {
+            log.warn("Google ID token verification failed: {}", ex.getMessage());
             throw new UnauthorizedException("Google token verification failed", "GOOGLE_TOKEN_INVALID");
         }
     }

@@ -1,11 +1,36 @@
 spring:
+  config:
+    activate:
+      on-profile: integration
+
+  flyway:
+    enabled: true
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
   kafka:
     listener:
       auto-startup: false
 
-  task:
-    scheduling:
-      enabled: false
+  mail:
+    host: localhost
+    port: 3025
+
+  logging:
+    level:
+      com.internetcafe: INFO
+      root: WARN
+
+jwt:
+  secret: integration-test-jwt-secret-min-32-chars!!
+  expiration: 3600000
+  refresh-expiration: 86400000
+
+google:
+  oauth:
+    client-id: test-client-id.apps.googleusercontent.com
 
 app:
   mail:
