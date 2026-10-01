@@ -32,7 +32,7 @@ public class AdminMailServiceImpl implements AdminMailService {
             helper.setSubject("Reset your administrator password");
             String safeName = fullName == null ? "Administrator" : fullName;
             helper.setText("""
-                    Hello %,
+                    Hello %s,
                     
                     We received a request to reset your administrator password.
                     
