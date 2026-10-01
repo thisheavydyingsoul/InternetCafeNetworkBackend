@@ -2,12 +2,15 @@ package com.internetcafe.service.impl;
 
 import com.internetcafe.service.AdminPasswordResetTokenStore;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.Locale;
 import java.util.Optional;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class RedisAdminPasswordResetTokenStore implements AdminPasswordResetTokenStore {
@@ -20,6 +23,7 @@ public class RedisAdminPasswordResetTokenStore implements AdminPasswordResetToke
     @Override
     public void save(String token, String administratorId, Duration ttl) {
         redis.opsForValue().set(TOKEN_PREFIX + token, administratorId, ttl);
+        log.debug("Password reset token stored adminId={} ttl={}", administratorId, ttl);
     }
 
     @Override
@@ -36,6 +40,9 @@ public class RedisAdminPasswordResetTokenStore implements AdminPasswordResetToke
     public boolean tryAcquireRateLimit(String email, Duration window) {
         String key = RATE_PREFIX + email.trim().toLowerCase();
         Boolean ok = redis.opsForValue().setIfAbsent(key, "1", window);
+        if(!Boolean.TRUE.equals((ok))) {
+            log.info("Password reset rate limited email={}", email.trim().toLowerCase());
+        }
         return Boolean.TRUE.equals(ok);
     }
 }

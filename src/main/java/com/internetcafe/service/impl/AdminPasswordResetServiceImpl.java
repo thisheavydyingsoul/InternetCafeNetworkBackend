@@ -36,6 +36,7 @@ public class AdminPasswordResetServiceImpl implements AdminPasswordResetService 
         String normalized = email.trim();
         Duration rateWindow = Duration.ofSeconds(emailProperties.getResendRateLimitSeconds());
         if (!tokenStore.tryAcquireRateLimit(normalized, rateWindow)) {
+            log.info("Password reset request ignored (rate limit) email={}", normalized);
             return;
         }
 

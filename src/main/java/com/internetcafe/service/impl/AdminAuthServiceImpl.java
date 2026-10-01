@@ -41,7 +41,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         GoogleIdToken.Payload payload = googleVerifier.verify(idToken);
 
         if (!Boolean.TRUE.equals(payload.getEmailVerified())) {
-            log.warn("Admin login denieed: email not verified by Google!");
+            log.warn("Admin login denied: email not verified by Google!");
             throw new ForbiddenException("Google email is not verified", "EMAIL_NOT_VERIFIED");
         }
 
@@ -102,13 +102,18 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     public AuthResponse refresh(String refreshToken) {
         AdminPrincipal principal = jwtService.parseRefreshToken(refreshToken);
         Administrator admin = administratorRepository.findById(principal.getId())
-                .orElseThrow(() -> new UnauthorizedException("Administrator not found", "ADMIN_NOT_FOUND"));
+                .orElseThrow(() -> {
+                    log.warn("Admin refresh denied: adminId={} reason=ADMIN_NOT_FOUND", principal.getId());
+                    return new UnauthorizedException("Administrator not found", "ADMIN_NOT_FOUND");
+                });
 
         if (!admin.isActive()) {
+            log.warn("Admin refresh denied: adminId={} reason=ADMIN_INACTIVE", principal.getId());
             throw new ForbiddenException("Administrator account is inactive", "ADMIN_INACTIVE");
         }
 
         AdminPrincipal fresh = new AdminPrincipal(admin.getId(), admin.getEmail(), admin.isHr());
+        log.info("Admin token refreshed id={} email={}", admin.getId(), admin.getEmail());
         return AuthResponse.builder()
                 .accessToken(jwtService.createAccessToken(fresh))
                 .refreshToken(jwtService.createRefreshToken(fresh))
@@ -123,7 +128,10 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     @Transactional(readOnly = true)
     public AdminProfileResponse me(AdminPrincipal principal) {
         Administrator admin = administratorRepository.findById(principal.getId())
-                .orElseThrow(() -> new UnauthorizedException("Administrator not found", "ADMIN_NOT_FOUND"));
+                .orElseThrow(() -> {
+                    log.warn("Admin profile denied: adminId={} reason=ADMIN_NOT_FOUND", principal.getId());
+                    return new UnauthorizedException("Administrator not found", "ADMIN_NOT_FOUND");
+                });
 
         return toProfile(admin);
     }

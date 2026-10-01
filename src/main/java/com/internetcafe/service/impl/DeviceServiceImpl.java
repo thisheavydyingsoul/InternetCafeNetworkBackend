@@ -10,12 +10,14 @@ import com.internetcafe.mapper.DeviceMapper;
 import com.internetcafe.repository.DeviceRepository;
 import com.internetcafe.service.DeviceService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -34,34 +36,44 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public DeviceResponse getDeviceById(String id) {
         Device device = deviceRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Device not found with id: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Device not found={}", id);
+                    return new ResourceNotFoundException("Device not found with id: " + id);
+                });
         return deviceMapper.toResponse(device);
     }
 
     @Override
     public List<DeviceResponse> getDevicesByOffice(String officeId) {
-        return deviceRepository.findByOfficeId(officeId).stream()
+        List<DeviceResponse> list = deviceRepository.findByOfficeId(officeId).stream()
                 .map(deviceMapper::toResponse)
                 .collect(Collectors.toList());
+        log.debug("Listing devices officeId={} count={}", officeId, list.size());
+        return list;
     }
 
     @Override
     public List<DeviceResponse> getAvailableDevicesByOffice(String officeId) {
-        return deviceRepository.findAvailableDevicesByOffice(officeId).stream()
+        List<DeviceResponse> list = deviceRepository.findAvailableDevicesByOffice(officeId).stream()
                 .map(deviceMapper::toResponse)
                 .collect(Collectors.toList());
+        log.debug("Listing active devices officeId={} count={}", officeId, list.size());
+        return list;
     }
 
     @Override
     public List<DeviceResponse> getAvailableDevicesByOfficeAndType(String officeId, String typeId) {
-        return deviceRepository.findAvailableDevicesByOfficeAndType(officeId, typeId).stream()
+        List<DeviceResponse> list = deviceRepository.findAvailableDevicesByOfficeAndType(officeId, typeId).stream()
                 .map(deviceMapper::toResponse)
                 .collect(Collectors.toList());
+        log.debug("Listing devices officeId={} typeId={} count={}", officeId, typeId, list.size());
+        return list;
     }
 
     private Device getDeviceWithDetails(String id) {
-        return deviceRepository.findWithDetailsById(id)
+        Device device =  deviceRepository.findWithDetailsById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Device", id));
+        log.debug("Getting device with details deviceId={}", id);
+        return device;
     }
-
 }

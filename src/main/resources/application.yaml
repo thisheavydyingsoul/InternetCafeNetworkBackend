@@ -112,3 +112,11 @@ app:
     resend-rate-limit-seconds: 60
     from: ${MAIL_FROM:}
     admin-frontend-url: ${ADMIN_FRONTEND_URL:http://localhost:4300}
+
+logging:
+  file:
+    path: ${LOG_PATH:./logs}
+    name: ${LOG_FILE_NAME:internet-cafe-backend}
+  level:
+    root: INFO
+    com.internetcafe: INFO
