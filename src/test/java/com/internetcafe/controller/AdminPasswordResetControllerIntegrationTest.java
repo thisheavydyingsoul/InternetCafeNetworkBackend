@@ -48,7 +48,7 @@ public class AdminPasswordResetControllerIntegrationTest extends AbstractIntegra
         String link = linkCaptor.getValue();
         String token = link.substring(link.indexOf("token=") + "token=".length());
 
-        mockMvc.perform(post("/auth/admin/password-reset/validate").param("token", token))
+        mockMvc.perform(get("/auth/admin/password-reset/validate").param("token", token))
                 .andExpect(status().isNoContent());
 
         AdminResetPasswordRequest confirm = new AdminResetPasswordRequest(token, "newPassw0rd!");
