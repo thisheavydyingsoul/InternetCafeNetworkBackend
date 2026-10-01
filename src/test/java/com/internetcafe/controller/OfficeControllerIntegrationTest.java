@@ -1,6 +1,7 @@
 package com.internetcafe.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import tools.jackson.databind.json.JsonMapper;
 import com.internetcafe.dto.request.office.OfficeCreateRequest;
 import com.internetcafe.dto.request.office.OfficeUpdateRequest;
 import com.internetcafe.support.AbstractIntegrationTest;
@@ -18,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class OfficeControllerIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired MockMvc mockMvc;
-    @Autowired ObjectMapper objectMapper;
+    @Autowired JsonMapper objectMapper;
 
     @Test
     void listOffices_includesSeededOffice() throws Exception {

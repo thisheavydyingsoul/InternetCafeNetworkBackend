@@ -1,7 +1,7 @@
 package com.internetcafe.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.internetcafe.security.oauth.GoogleIdTokenVerifierService;
 import com.internetcafe.support.AbstractIntegrationTest;
@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AdminAuthControllerIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired MockMvc mockMvc;
-    @Autowired ObjectMapper objectMapper;
+    @Autowired JsonMapper objectMapper;
 
     @MockitoBean GoogleIdTokenVerifierService googleVerifier;
 
