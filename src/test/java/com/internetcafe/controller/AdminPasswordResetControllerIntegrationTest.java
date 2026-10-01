@@ -2,7 +2,7 @@ package com.internetcafe.controller;
 
 import com.internetcafe.dto.request.auth.AdminResetPasswordRequest;
 import com.internetcafe.repository.AdministratorRepository;
-import com.internetcafe.service.AdminMailService;
+import com.internetcafe.service.admin.mail.AdminMailService;
 import com.internetcafe.support.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

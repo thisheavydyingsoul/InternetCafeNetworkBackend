@@ -5,9 +5,10 @@ import com.internetcafe.entity.Administrator;
 import com.internetcafe.enums.AuditAction;
 import com.internetcafe.exception.BadRequestException;
 import com.internetcafe.repository.AdministratorRepository;
-import com.internetcafe.service.AdminAuditLogService;
-import com.internetcafe.service.AdminMailService;
-import com.internetcafe.service.AdminPasswordResetTokenStore;
+import com.internetcafe.service.admin.audit.AdminAuditLogService;
+import com.internetcafe.service.admin.mail.AdminMailService;
+import com.internetcafe.service.admin.password.store.AdminPasswordResetTokenStore;
+import com.internetcafe.service.admin.password.AdminPasswordResetServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,8 @@ public class AdminPasswordResetServiceImplTest {
     @Mock AdminAuditLogService adminAuditLogService;
     @Mock HttpServletRequest request;
 
-    @InjectMocks AdminPasswordResetServiceImpl service;
+    @InjectMocks
+    AdminPasswordResetServiceImpl service;
 
     private Administrator admin;
 

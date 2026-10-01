@@ -1,4 +1,4 @@
-package com.internetcafe.service;
+package com.internetcafe.service.admin.auth;
 
 import com.internetcafe.dto.response.AdminProfileResponse;
 import com.internetcafe.dto.response.AuthResponse;

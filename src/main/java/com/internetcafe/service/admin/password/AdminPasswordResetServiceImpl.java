@@ -1,14 +1,13 @@
-package com.internetcafe.service.impl;
+package com.internetcafe.service.admin.password;
 
 import com.internetcafe.config.AppEmailProperties;
 import com.internetcafe.entity.Administrator;
 import com.internetcafe.enums.AuditAction;
 import com.internetcafe.exception.BadRequestException;
 import com.internetcafe.repository.AdministratorRepository;
-import com.internetcafe.service.AdminAuditLogService;
-import com.internetcafe.service.AdminMailService;
-import com.internetcafe.service.AdminPasswordResetService;
-import com.internetcafe.service.AdminPasswordResetTokenStore;
+import com.internetcafe.service.admin.audit.AdminAuditLogService;
+import com.internetcafe.service.admin.mail.AdminMailService;
+import com.internetcafe.service.admin.password.store.AdminPasswordResetTokenStore;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

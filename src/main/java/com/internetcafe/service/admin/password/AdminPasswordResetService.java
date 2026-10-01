@@ -1,4 +1,4 @@
-package com.internetcafe.service;
+package com.internetcafe.service.admin.password;
 
 import jakarta.servlet.http.HttpServletRequest;
 

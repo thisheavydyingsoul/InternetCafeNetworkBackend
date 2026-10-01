@@ -2,7 +2,7 @@ package com.internetcafe.controller;
 
 import com.internetcafe.dto.request.auth.AdminForgotPasswordRequest;
 import com.internetcafe.dto.request.auth.AdminResetPasswordRequest;
-import com.internetcafe.service.AdminPasswordResetService;
+import com.internetcafe.service.admin.password.AdminPasswordResetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;

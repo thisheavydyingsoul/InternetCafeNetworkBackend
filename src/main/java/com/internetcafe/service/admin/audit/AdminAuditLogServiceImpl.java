@@ -1,10 +1,9 @@
-package com.internetcafe.service.impl;
+package com.internetcafe.service.admin.audit;
 
 import com.internetcafe.entity.Administrator;
 import com.internetcafe.entity.Log;
 import com.internetcafe.enums.AuditAction;
 import com.internetcafe.repository.LogRepository;
-import com.internetcafe.service.AdminAuditLogService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.internetcafe.service;
+package com.internetcafe.service.admin.catalog.office;
 
 import com.internetcafe.dto.request.office.OfficeCreateRequest;
 import com.internetcafe.dto.request.office.OfficeUpdateRequest;

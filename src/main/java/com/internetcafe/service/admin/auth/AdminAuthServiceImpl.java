@@ -1,4 +1,4 @@
-package com.internetcafe.service.impl;
+package com.internetcafe.service.admin.auth;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.internetcafe.config.JwtProperties;
@@ -12,8 +12,7 @@ import com.internetcafe.repository.AdministratorRepository;
 import com.internetcafe.security.oauth.AdminPrincipal;
 import com.internetcafe.security.oauth.GoogleIdTokenVerifierService;
 import com.internetcafe.security.jwt.JwtService;
-import com.internetcafe.service.AdminAuditLogService;
-import com.internetcafe.service.AdminAuthService;
+import com.internetcafe.service.admin.audit.AdminAuditLogService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

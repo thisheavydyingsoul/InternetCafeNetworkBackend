@@ -1,6 +1,7 @@
 package com.internetcafe.service.impl;
 
-import com.internetcafe.service.AdminPasswordResetTokenStore;
+import com.internetcafe.service.admin.password.store.AdminPasswordResetTokenStore;
+import com.internetcafe.service.admin.password.store.RedisAdminPasswordResetTokenStore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
