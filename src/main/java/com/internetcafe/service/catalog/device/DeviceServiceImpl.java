@@ -1,14 +1,10 @@
-package com.internetcafe.service.impl;
+package com.internetcafe.service.catalog.device;
 
-import com.internetcafe.dto.request.device.DeviceCreateRequest;
-import com.internetcafe.dto.request.device.DeviceUpdateRequest;
 import com.internetcafe.dto.response.DeviceResponse;
 import com.internetcafe.entity.Device;
-import com.internetcafe.entity.Office;
 import com.internetcafe.exception.ResourceNotFoundException;
 import com.internetcafe.mapper.DeviceMapper;
 import com.internetcafe.repository.DeviceRepository;
-import com.internetcafe.service.DeviceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -7,6 +7,7 @@ import com.internetcafe.entity.Office;
 import com.internetcafe.exception.ResourceNotFoundException;
 import com.internetcafe.mapper.OfficeMapper;
 import com.internetcafe.repository.OfficeRepository;
+import com.internetcafe.service.admin.catalog.office.OfficeServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,7 +28,8 @@ public class OfficeServiceImplTest {
     @Mock OfficeRepository officeRepository;
     @Mock OfficeMapper officeMapper;
 
-    @InjectMocks OfficeServiceImpl officeService;
+    @InjectMocks
+    OfficeServiceImpl officeService;
 
     @Test
     void getOfficeById_notFound() {

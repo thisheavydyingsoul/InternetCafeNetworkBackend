@@ -1,7 +1,5 @@
-package com.internetcafe.service;
+package com.internetcafe.service.catalog.device;
 
-import com.internetcafe.dto.request.device.DeviceCreateRequest;
-import com.internetcafe.dto.request.device.DeviceUpdateRequest;
 import com.internetcafe.dto.response.DeviceResponse;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.internetcafe.service;
+package com.internetcafe.service.admin.audit;
 
 import com.internetcafe.entity.Administrator;
 import com.internetcafe.enums.AuditAction;

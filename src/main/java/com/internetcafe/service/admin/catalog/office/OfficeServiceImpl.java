@@ -1,4 +1,4 @@
-package com.internetcafe.service.impl;
+package com.internetcafe.service.admin.catalog.office;
 
 import com.internetcafe.dto.request.office.OfficeCreateRequest;
 import com.internetcafe.dto.request.office.OfficeUpdateRequest;
@@ -6,7 +6,6 @@ import com.internetcafe.dto.response.OfficeResponse;
 import com.internetcafe.entity.Office;
 import com.internetcafe.mapper.OfficeMapper;
 import com.internetcafe.repository.OfficeRepository;
-import com.internetcafe.service.OfficeService;
 import lombok.RequiredArgsConstructor;
 import com.internetcafe.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;

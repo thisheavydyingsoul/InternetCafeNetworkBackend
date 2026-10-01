@@ -1,7 +1,7 @@
 package com.internetcafe.controller;
 
 import com.internetcafe.dto.response.DeviceResponse;
-import com.internetcafe.service.DeviceService;
+import com.internetcafe.service.catalog.device.DeviceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

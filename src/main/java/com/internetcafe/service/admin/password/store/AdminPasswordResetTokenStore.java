@@ -1,4 +1,4 @@
-package com.internetcafe.service;
+package com.internetcafe.service.admin.password.store;
 
 import java.time.Duration;
 import java.util.Optional;

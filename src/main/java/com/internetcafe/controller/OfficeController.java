@@ -3,7 +3,7 @@ package com.internetcafe.controller;
 import com.internetcafe.dto.request.office.OfficeCreateRequest;
 import com.internetcafe.dto.request.office.OfficeUpdateRequest;
 import com.internetcafe.dto.response.OfficeResponse;
-import com.internetcafe.service.OfficeService;
+import com.internetcafe.service.admin.catalog.office.OfficeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

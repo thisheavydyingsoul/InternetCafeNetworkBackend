@@ -1,13 +1,11 @@
-package com.internetcafe.service.impl;
+package com.internetcafe.service.admin.password.store;
 
-import com.internetcafe.service.AdminPasswordResetTokenStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import java.util.Locale;
 import java.util.Optional;
 
 @Slf4j

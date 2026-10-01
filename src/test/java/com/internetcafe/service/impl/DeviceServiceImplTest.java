@@ -5,6 +5,7 @@ import com.internetcafe.entity.Device;
 import com.internetcafe.exception.ResourceNotFoundException;
 import com.internetcafe.mapper.DeviceMapper;
 import com.internetcafe.repository.DeviceRepository;
+import com.internetcafe.service.catalog.device.DeviceServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,7 +25,8 @@ public class DeviceServiceImplTest {
     @Mock DeviceRepository deviceRepository;
     @Mock DeviceMapper deviceMapper;
 
-    @InjectMocks DeviceServiceImpl deviceService;
+    @InjectMocks
+    DeviceServiceImpl deviceService;
 
     @Test
     void getDeviceById_notFound() {

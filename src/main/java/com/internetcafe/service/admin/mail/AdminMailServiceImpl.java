@@ -1,7 +1,6 @@
-package com.internetcafe.service.impl;
+package com.internetcafe.service.admin.mail;
 
 import com.internetcafe.config.AppEmailProperties;
-import com.internetcafe.service.AdminMailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +44,7 @@ public class AdminMailServiceImpl implements AdminMailService {
                     - Internet Cafe Admin
                     """.formatted(safeName, resetLink), false);
             mailSender.send(message);
+            log.info("Mail message with reset link sent to {}", toEmail);
         } catch (MessagingException ex) {
             log.error("Failed to send password reset email to {}", toEmail, ex);
             throw new IllegalStateException("Failed to send email", ex);

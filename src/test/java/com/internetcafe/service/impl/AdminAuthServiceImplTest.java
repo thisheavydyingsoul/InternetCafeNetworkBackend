@@ -9,7 +9,8 @@ import com.internetcafe.exception.ForbiddenException;
 import com.internetcafe.repository.AdministratorRepository;
 import com.internetcafe.security.jwt.JwtService;
 import com.internetcafe.security.oauth.GoogleIdTokenVerifierService;
-import com.internetcafe.service.AdminAuditLogService;
+import com.internetcafe.service.admin.audit.AdminAuditLogService;
+import com.internetcafe.service.admin.auth.AdminAuthServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,8 @@ public class AdminAuthServiceImplTest {
     @Mock JwtProperties jwtProperties;
     @Mock HttpServletRequest request;
 
-    @InjectMocks AdminAuthServiceImpl adminAuthService;
+    @InjectMocks
+    AdminAuthServiceImpl adminAuthService;
 
     private Administrator activeAdmin;
 

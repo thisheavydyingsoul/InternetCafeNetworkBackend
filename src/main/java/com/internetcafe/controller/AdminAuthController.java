@@ -5,7 +5,7 @@ import com.internetcafe.dto.request.auth.RefreshTokenRequest;
 import com.internetcafe.dto.response.AdminProfileResponse;
 import com.internetcafe.dto.response.AuthResponse;
 import com.internetcafe.security.oauth.AdminPrincipal;
-import com.internetcafe.service.AdminAuthService;
+import com.internetcafe.service.admin.auth.AdminAuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
