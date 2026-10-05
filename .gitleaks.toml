@@ -1,0 +1,4 @@
+title = "Internet Cafe Backend gitleaks"
+
+[extend]
+useDefault = true
